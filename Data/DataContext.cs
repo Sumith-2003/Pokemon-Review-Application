@@ -7,7 +7,6 @@ namespace PokemonReviewApp.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base (options) 
         {
-
         }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Country> Countries { get; set; }
@@ -41,6 +40,6 @@ namespace PokemonReviewApp.Data
                 .HasOne(p => p.Category)
                 .WithMany(pc => pc.PokemonCategories)
                 .HasForeignKey(c => c.CategoryId);
-        }
+        } 
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Models;
 using PokemonReviewApp.Interfaces;
+using AutoMapper;
+using PokemonReviewApp.Dto;
 
 namespace PokemonReviewApp.Controllers
 {
@@ -9,10 +11,12 @@ namespace PokemonReviewApp.Controllers
     public class PokemonController : ControllerBase
     {
         private readonly IPokemonRepository _pokemonRepository;
+        private readonly IMapper _mapper;
 
-        public PokemonController(IPokemonRepository pokemonRepository)
+        public PokemonController(IPokemonRepository pokemonRepository, IMapper mapper)
         {
             _pokemonRepository = pokemonRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -20,7 +24,7 @@ namespace PokemonReviewApp.Controllers
         [ProducesResponseType(500)]
         public IActionResult GetPokemons()
         {
-            var pokemons = _pokemonRepository.GetPokemons();
+            var pokemons = _mapper.Map<List<PokemonDto>>(_pokemonRepository.GetPokemons());
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -35,7 +39,7 @@ namespace PokemonReviewApp.Controllers
         {
             if(!_pokemonRepository.PokemonExists(pokeId)) return NotFound();
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var pokemon = _pokemonRepository.GetPokemon(pokeId);
+            var pokemon = _mapper.Map<PokemonDto>(_pokemonRepository.GetPokemon(pokeId));
             return Ok(pokemon);
         }
 

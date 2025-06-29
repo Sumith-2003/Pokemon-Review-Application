@@ -38,15 +38,24 @@ namespace PokemonReviewApp.Controllers
             return Ok(country);
         }
 
-        [HttpGet("owners/{countryId}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Owner>))]
+        //[HttpGet("owners/{countryId}")]
+        //[ProducesResponseType(200, Type = typeof(IEnumerable<Owner>))]
+        //[ProducesResponseType(400)]
+        //public IActionResult GetOwnersByCountry(int countryId)
+        //{
+        //    if (!_countryRepository.CountryExists(countryId)) return NotFound();
+        //    if (!ModelState.IsValid) return BadRequest(ModelState);
+        //    var owners = _mapper.Map<List<OwnerDto>>(_countryRepository.GetOwnersByCountry(countryId));
+        //    return Ok(owners);
+        //}
+        [HttpGet("owner/{ownerId}")]
+        [ProducesResponseType(200, Type = typeof(Country))]
         [ProducesResponseType(400)]
-        public IActionResult GetOwnersByCountry(int countryId)
+        public IActionResult GetCountryOfAnOwner(int ownerId)
         {
-            if (!_countryRepository.CountryExists(countryId)) return NotFound();
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var owners = _mapper.Map<List<Owner>>(_countryRepository.GetOwnersByCountry(countryId));
-            return Ok(owners);
+            var country = _mapper.Map<CountryDto>(_countryRepository.GetCountryOfAnOwner(ownerId));
+            return Ok(country);
         }
     }
 }

@@ -31,12 +31,19 @@ namespace PokemonReviewApp.Repository
             return _context.Countries.FirstOrDefault(c => c.Id == countryId);
         }
 
-        public ICollection<Owner> GetOwnersByCountry(int countryId)
+        public Country? GetCountryOfAnOwner(int ownerId)
         {
-            return _context.Owners
-                .Where(o => o.Country.Id == countryId)
-                .OrderBy(o => o.FirstName)
-                .ToList();
+            return _context.Countries
+                .Where(c => c.Owners.Any(o => o.Id == ownerId))
+                .FirstOrDefault();
         }
+
+        //public ICollection<Owner> GetOwnersByCountry(int countryId)
+        //{
+        //    return _context.Owners
+        //        .Where(o => o.Country.Id == countryId)
+        //        .OrderBy(o => o.FirstName)
+        //        .ToList();
+        //}
     }
 }

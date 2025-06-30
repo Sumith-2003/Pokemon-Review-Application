@@ -22,7 +22,7 @@ namespace PokemonReviewApp.Controllers
         public IActionResult GetReviews()
         {
             var reviews = _reviewRepository.GetReviews();
-            var reviewsDto = _mapper.Map<ICollection<ReviewDto>>(reviews);
+            var reviewsDto = _mapper.Map<List<ReviewDto>>(reviews);
             return Ok(reviewsDto);
         }
 

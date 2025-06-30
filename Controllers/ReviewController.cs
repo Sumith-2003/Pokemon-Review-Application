@@ -40,5 +40,18 @@ namespace PokemonReviewApp.Controllers
             return Ok(reviewDto);
         }
 
+        [HttpGet("pokemon/{pokeId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<ReviewDto>))]
+        [ProducesResponseType(404)]
+        public IActionResult GetReviewsForAPokemon(int pokeId)
+        {
+            var reviews = _reviewRepository.GetReviewsForAPokemon(pokeId);
+            if (reviews == null || !reviews.Any())
+            {
+                return NotFound();
+            }
+            var reviewsDto = _mapper.Map<List<ReviewDto>>(reviews);
+            return Ok(reviewsDto);
+        }
     }
 }

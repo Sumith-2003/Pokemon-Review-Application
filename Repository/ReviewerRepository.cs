@@ -23,5 +23,12 @@ namespace PokemonReviewApp.Repository
         {
             return _context.Reviewers.Any(r => r.Id == reviewerId);
         }
+
+        public ICollection<Review> GetReviewsOfReviewer(int reviewerId)
+        {
+            return _context.Reviews
+                .Where(r => r.Reviewer.Id == reviewerId)
+                .ToList();
+        }
     }
 }

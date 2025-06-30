@@ -6,6 +6,6 @@ namespace PokemonReviewApp.Interfaces
     {
         ICollection<Review> GetReviews();
         Review GetReview(int reviewId);
-        ICollection<Review> GetReviewsOfAPokemon(int pokemonId);
+        ICollection<Review> GetReviewsForAPokemon(int pokeId);
     }
 }

@@ -45,7 +45,7 @@ namespace PokemonReviewApp.Controllers
         [ProducesResponseType(404)]
         public IActionResult GetReviewsForAPokemon(int pokeId)
         {
-            var reviews = _reviewRepository.GetReviewsForAPokemon(pokeId);
+            var reviews = _reviewRepository.GetReviewsOfAPokemon(pokeId);
             if (reviews == null || !reviews.Any())
             {
                 return NotFound();

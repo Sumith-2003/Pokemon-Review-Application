@@ -23,7 +23,7 @@ namespace PokemonReviewApp.Repository
             return _context.Reviews.FirstOrDefault(r => r.Id == reviewId);
         }
 
-        public ICollection<Review> GetReviewsForAPokemon(int pokeId)
+        public ICollection<Review> GetReviewsOfAPokemon(int pokeId)
         {
             return _context.Reviews
                 .Where(r => r.Pokemon.Id == pokeId)

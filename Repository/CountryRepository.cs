@@ -38,12 +38,12 @@ namespace PokemonReviewApp.Repository
                 .FirstOrDefault();
         }
 
-        //public ICollection<Owner> GetOwnersByCountry(int countryId)
-        //{
-        //    return _context.Owners
-        //        .Where(o => o.Country.Id == countryId)
-        //        .OrderBy(o => o.FirstName)
-        //        .ToList();
-        //}
+        public ICollection<Owner> GetOwnersByCountry(int countryId)
+        {
+            return _context.Owners
+                .Where(o => o.Country.Id == countryId)
+                .OrderBy(o => o.FirstName)
+                .ToList();
+        }
     }
 }

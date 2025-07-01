@@ -1,4 +1,5 @@
-﻿using PokemonReviewApp.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using PokemonReviewApp.Data;
 using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Models;
 
@@ -13,11 +14,15 @@ namespace PokemonReviewApp.Repository
         }
         public ICollection<Reviewer> GetReviewers()
         {
-            return _context.Reviewers.OrderBy(r => r.Id).ToList();
+            return _context.Reviewers
+                .Include(r => r.Reviews)
+                .OrderBy(r => r.Id).ToList();
         }
-        public Reviewer GetReviewer(int reviewerId)
+        public Reviewer? GetReviewer(int reviewerId)
         {
-            return _context.Reviewers.FirstOrDefault(r => r.Id == reviewerId);
+            return _context.Reviewers
+                .Include(r => r.Reviews)
+                .FirstOrDefault(r => r.Id == reviewerId);
         }
         public bool ReviewerExists(int reviewerId)
         {

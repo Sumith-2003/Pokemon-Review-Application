@@ -16,6 +16,14 @@ namespace PokemonReviewApp.Repository
             return _context.Categories.Any(c => c.Id == categoryId);
         }
 
+        public bool CreateCategory(Category category)
+        {
+            //Change Tracker is EF Core's internal system to monitor entity states(Added, Modified, Deleted). 
+            _context.Categories.Add(category);
+            //Save changes to the database
+            return Save();
+        }
+
         public ICollection<Category> GetCategories()
         {
             return _context.Categories.OrderBy(c => c.Id).ToList();
@@ -34,6 +42,12 @@ namespace PokemonReviewApp.Repository
                 .Where(p => p.PokemonCategories.Any(pc => pc.Category.Id == categoryId))
                 .OrderBy(p => p.Name)
                 .ToList();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
     }
 }

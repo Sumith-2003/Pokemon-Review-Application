@@ -55,11 +55,12 @@ namespace PokemonReviewApp.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(204)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         public IActionResult CreateCategory([FromBody] CategoryDto categoryCreate)
         {
             if (categoryCreate == null) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var category = _categoryRepository.GetCategories()
                                               .Where(c => c.Name.Trim().ToUpper() == categoryCreate.Name.TrimEnd().ToUpper())
                                               .FirstOrDefault();
@@ -68,15 +69,10 @@ namespace PokemonReviewApp.Controllers
                 ModelState.AddModelError("", "Category already exists");
                 return StatusCode(422, ModelState);
             }
-            if (_categoryRepository.CategoryExists(categoryCreate.Id))
-            {
-                ModelState.AddModelError("", "Category already exists");
-                return StatusCode(422, ModelState);
-            }
             var categoryMap = _mapper.Map<Category>(categoryCreate);
             if (!_categoryRepository.CreateCategory(categoryMap))
             {
-                ModelState.AddModelError("", "Something went wrong while saving the category");
+                ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
             }
             return Ok("Successfully created");

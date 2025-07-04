@@ -21,6 +21,12 @@ namespace PokemonReviewApp.Repository
             return _context.Countries.Any(c => c.Name.Trim().ToUpper() == countryName.Trim().ToUpper());
         }
 
+        public bool CreateCountry(Country country)
+        {
+            _context.Countries.Add(country);
+            return Save();
+        }
+
         public ICollection<Country> GetCountries()
         {
             return _context.Countries.OrderBy(c => c.Name).ToList();
@@ -44,6 +50,19 @@ namespace PokemonReviewApp.Repository
                 .Where(o => o.Country.Id == countryId)
                 .OrderBy(o => o.FirstName)
                 .ToList();
+        }
+
+        public bool Save()
+        {
+            try
+            {
+                var saved = _context.SaveChanges();
+                return saved > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

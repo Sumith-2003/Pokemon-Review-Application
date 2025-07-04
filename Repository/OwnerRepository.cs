@@ -46,5 +46,26 @@ namespace PokemonReviewApp.Repository
         {
             return _context.Owners.Any(o => o.Id == ownerId);
         }
+
+        public bool CreateOwner(Owner owner)
+        {
+            _context.Owners.Add(owner);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            try
+            {
+                var saved = _context.SaveChanges();
+                return saved > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Save error: {ex.Message}");
+                Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
+                return false;
+            }
+        }
     }
 }

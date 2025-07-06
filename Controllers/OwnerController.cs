@@ -3,7 +3,6 @@ using PokemonReviewApp.Models;
 using PokemonReviewApp.Interfaces;
 using AutoMapper;
 using PokemonReviewApp.Dto;
-using PokemonReviewApp.Repository;
 
 namespace PokemonReviewApp.Controllers
 {
@@ -85,7 +84,7 @@ namespace PokemonReviewApp.Controllers
                 return StatusCode(422, ModelState);
             }
             var ownerMap = _mapper.Map<Owner>(createOwner);
-            ownerMap.Country = _countryRepository.GetCountry(countryId);
+            ownerMap.Country = _countryRepository.GetCountry(countryId);  //can do here or inside the repository
             if (!_ownerRepository.CreateOwner(ownerMap))
             {
                 ModelState.AddModelError("", $"Something went wrong when saving the owner {createOwner.FirstName} {createOwner.LastName}");

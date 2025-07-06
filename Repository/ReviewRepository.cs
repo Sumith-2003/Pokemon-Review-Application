@@ -29,5 +29,26 @@ namespace PokemonReviewApp.Repository
                 .Where(r => r.Pokemon.Id == pokeId)
                 .ToList();
         }
+
+        public bool CreateReview(Review review)
+        {
+            _context.Reviews.Add(review);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            try
+            {
+                var saved = _context.SaveChanges();
+                return saved > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Save error: {ex.Message}");
+                Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
+                return false;
+            }
+        }
     }
 }

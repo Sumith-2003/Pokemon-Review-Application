@@ -15,13 +15,13 @@ namespace PokemonReviewApp.Repository
         public ICollection<Reviewer> GetReviewers()
         {
             return _context.Reviewers
-                .Include(r => r.Reviews)
+                //.Include(r => r.Reviews)
                 .OrderBy(r => r.Id).ToList();
         }
         public Reviewer? GetReviewer(int reviewerId)
         {
             return _context.Reviewers
-                .Include(r => r.Reviews)
+                //.Include(r => r.Reviews)
                 .FirstOrDefault(r => r.Id == reviewerId);
         }
         public bool ReviewerExists(int reviewerId)
@@ -34,6 +34,27 @@ namespace PokemonReviewApp.Repository
             return _context.Reviews
                 .Where(r => r.Reviewer.Id == reviewerId)
                 .ToList();
+        }
+
+        public bool CreateReviewer(Reviewer reviewer)
+        {
+            _context.Reviewers.Add(reviewer);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            try
+            {
+                var saved = _context.SaveChanges();
+                return saved > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Save error: {ex.Message}");
+                Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
+                return false;
+            }
         }
     }
 }

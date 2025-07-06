@@ -49,6 +49,13 @@ namespace PokemonReviewApp.Repository
 
         public bool CreateOwner(Owner owner)
         {
+            //var countryIdEntity = _context.Countries.FirstOrDefault(c => c.Id == countryId);
+            //var country = new Country()
+            //{
+            //    Id = countryIdEntity.Id,
+            //    Name = countryIdEntity.Name
+            //};
+            //_context.Countries.Add(country);
             _context.Owners.Add(owner);
             return Save();
         }

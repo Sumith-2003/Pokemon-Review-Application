@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Dto;
 using PokemonReviewApp.Interfaces;
+using PokemonReviewApp.Models;
+using PokemonReviewApp.Repository;
 
 namespace PokemonReviewApp.Controllers
 {
@@ -11,10 +13,18 @@ namespace PokemonReviewApp.Controllers
     {
         private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
-        public ReviewController(IReviewRepository reviewRepository, IMapper mapper)
+        private readonly IPokemonRepository _pokemonRepository;
+        private readonly IReviewerRepository _reviewerRepository;
+        public ReviewController(
+            IReviewRepository reviewRepository,
+            IMapper mapper,
+            IPokemonRepository pokemonRepository,
+            IReviewerRepository reviewerRepository)
         {
             _reviewRepository = reviewRepository;
             _mapper = mapper;
+            _pokemonRepository = pokemonRepository;
+            _reviewerRepository = reviewerRepository;
         }
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ReviewDto>))]
@@ -52,6 +62,22 @@ namespace PokemonReviewApp.Controllers
             }
             var reviewsDto = _mapper.Map<List<ReviewDto>>(reviews);
             return Ok(reviewsDto);
+        }
+        [HttpPost]
+        [ProducesResponseType(201, Type = typeof(ReviewDto))]
+        [ProducesResponseType(400)]
+        public IActionResult CreateReview([FromQuery]int reviewerId,[FromQuery]int pokemonId,[FromBody] ReviewDto createReview)
+        {
+            if (createReview == null) return BadRequest(ModelState);
+            var reviewMap = _mapper.Map<Review>(createReview);
+            reviewMap.Reviewer = _reviewerRepository.GetReviewer(reviewerId);
+            reviewMap.Pokemon = _pokemonRepository.GetPokemon(pokemonId);
+            if (!_reviewRepository.CreateReview(reviewMap))
+            {
+                ModelState.AddModelError("", $"Something went wrong when saving the review");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Successfully created");
         }
     }
 }

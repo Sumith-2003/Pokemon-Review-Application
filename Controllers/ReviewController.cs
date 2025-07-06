@@ -66,7 +66,7 @@ namespace PokemonReviewApp.Controllers
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(ReviewDto))]
         [ProducesResponseType(400)]
-        public IActionResult CreateReview([FromQuery]int reviewerId,[FromQuery]int pokemonId,[FromBody] ReviewDto createReview)
+        public IActionResult CreateReview([FromQuery] int reviewerId, [FromQuery] int pokemonId, [FromBody] ReviewDto createReview)
         {
             if (createReview == null) return BadRequest(ModelState);
             var reviewMap = _mapper.Map<Review>(createReview);
@@ -78,6 +78,24 @@ namespace PokemonReviewApp.Controllers
                 return StatusCode(500, ModelState);
             }
             return Ok("Successfully created");
+        }
+        [HttpPut("{reviewId:int}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateReview(int reviewId, [FromBody] ReviewDto updateReview)
+        {
+            if (updateReview == null || reviewId != updateReview.Id)
+            {
+                return BadRequest(ModelState);
+            }
+            var reviewMap = _mapper.Map<Review>(updateReview);
+            if (!_reviewRepository.UpdateReview(reviewMap))
+            {
+                ModelState.AddModelError("", $"Something went wrong when updating the review");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Successfully updated");
         }
     }
 }

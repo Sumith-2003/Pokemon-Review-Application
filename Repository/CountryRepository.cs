@@ -51,7 +51,6 @@ namespace PokemonReviewApp.Repository
                 .OrderBy(o => o.FirstName)
                 .ToList();
         }
-
         public bool Save()
         {
             try
@@ -63,6 +62,11 @@ namespace PokemonReviewApp.Repository
             {
                 return false;
             }
+        }
+        public bool UpdateCountry(Country country)
+        {
+            _context.Update(country);
+            return Save();
         }
     }
 }

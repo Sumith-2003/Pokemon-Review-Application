@@ -61,13 +61,13 @@ namespace PokemonReviewApp.Controllers
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(Country))]
         [ProducesResponseType(400)]
-        public IActionResult CreateCountry([FromBody]CountryDto createCountry)
+        public IActionResult CreateCountry([FromBody] CountryDto createCountry)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             if (createCountry == null) return BadRequest(ModelState);
-            var country =_countryRepository.GetCountries()
+            var country = _countryRepository.GetCountries()
                                            .Where(c => c.Name.Trim().ToUpper() == createCountry.Name.TrimEnd().ToUpper())
-                                           .FirstOrDefault();  
+                                           .FirstOrDefault();
             if (country != null)
             {
                 ModelState.AddModelError("", "Country already exists");
@@ -98,6 +98,22 @@ namespace PokemonReviewApp.Controllers
                 return StatusCode(500, ModelState);
             }
             return Ok("Successfully updated");
+        }
+        [HttpDelete("{countryId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteCountry(int countryId)
+        {
+            if (!_countryRepository.CountryExists(countryId)) return NotFound();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var countryToDelete = _countryRepository.GetCountry(countryId);
+            if (!_countryRepository.DeleteCountry(countryToDelete))
+            {
+                ModelState.AddModelError("", $"Something went wrong when deleting the country {countryToDelete.Name}");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Successfully deleted");
         }
     }
 }

@@ -97,5 +97,23 @@ namespace PokemonReviewApp.Controllers
             }
             return Ok("Successfully updated");
         }
+        [HttpDelete("{reviewId:int}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteReview(int reviewId)
+        {
+            var review = _reviewRepository.GetReview(reviewId);
+            if (review == null)
+            {
+                return BadRequest(ModelState);
+            }
+            if (!_reviewRepository.DeleteReview(review))
+            {
+                ModelState.AddModelError("", $"Something went wrong when deleting the review");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Successfully deleted");
+        }
     }
 }

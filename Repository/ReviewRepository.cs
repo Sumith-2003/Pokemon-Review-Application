@@ -56,5 +56,12 @@ namespace PokemonReviewApp.Repository
             _context.Update(review);
             return Save();
         }
+
+        public bool DeleteReview(Review review)
+        {
+            if (review == null) return false;
+            _context.Reviews.Remove(review);
+            return Save();
+        }
     }
 }

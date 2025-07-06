@@ -85,7 +85,7 @@ namespace PokemonReviewApp.Controllers
         {
             if (categoryUpdate == null) return BadRequest(ModelState);
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            if(categoryId != categoryUpdate.Id) return BadRequest(ModelState);
+            if (categoryId != categoryUpdate.Id) return BadRequest(ModelState);
             if (!_categoryRepository.CategoryExists(categoryId)) return NotFound();
             var categoryMap = _mapper.Map<Category>(categoryUpdate);
             if (!_categoryRepository.UpdateCategory(categoryMap))
@@ -94,6 +94,21 @@ namespace PokemonReviewApp.Controllers
                 return StatusCode(500, ModelState);
             }
             return Ok("Successfully updated");
+        }
+        [HttpDelete("{categoryId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteCategory(int categoryId)
+        {
+            if (!_categoryRepository.CategoryExists(categoryId)) return NotFound();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!_categoryRepository.DeleteCategory(categoryId))
+            {
+                ModelState.AddModelError("", "Something went wrong while deleting");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Successfully deleted");
         }
     }
 }

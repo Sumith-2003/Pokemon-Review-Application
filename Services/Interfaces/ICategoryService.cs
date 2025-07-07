@@ -1,16 +1,16 @@
-﻿using PokemonReviewApp.Models;
+﻿using PokemonReviewApp.Dto;
 
 namespace PokemonReviewApp.Services.Interfaces
 {
     public interface ICategoryService
     {
-        ICollection<Category> GetCategories();
-        Category GetCategory(int categoryId);
-        ICollection<Pokemon> GetPokemonsByCategory(int categoryId);
-        bool CategoryExists(int categoryId);
-        bool CreateCategory(Category category);
-        bool UpdateCategory(Category category);
-        bool DeleteCategory(int categoryId);
-        bool Save();
+        Task<ICollection<CategoryDto>> GetCategories();
+        Task<CategoryDto> GetCategory(int categoryId);
+        Task<ICollection<PokemonDto>> GetPokemonsByCategory(int categoryId);
+        Task<bool> CategoryExists(int categoryId);
+        Task<bool> CreateCategory(CategoryDto categoryDto);
+        Task<bool> UpdateCategory(CategoryDto categoryDto);
+        Task<bool> DeleteCategory(int categoryId);
+        Task<bool> Save();
     }
 }

@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using PokemonReviewApp;
 using PokemonReviewApp.Data;
+using PokemonReviewApp.Repositories.Implementations;
+using PokemonReviewApp.Repositories.Interfaces;
 using PokemonReviewApp.Services.Interfaces;
 using PokemonReviewApp.Services.Repository;
 
@@ -10,6 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddTransient<Seed>();
+// Register Repositories
+builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
+// Register Services
 builder.Services.AddScoped<IPokemonService, PokemonService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICountryService, CountryService>();

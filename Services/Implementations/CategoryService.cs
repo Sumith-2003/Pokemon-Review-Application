@@ -1,74 +1,78 @@
-﻿using PokemonReviewApp.Data;
+﻿using AutoMapper;
+using PokemonReviewApp.Dto;
 using PokemonReviewApp.Models;
+using PokemonReviewApp.Repositories.Interfaces;
 using PokemonReviewApp.Services.Interfaces;
 
 namespace PokemonReviewApp.Services.Repository
 {
     public class CategoryService : ICategoryService
     {
-        private readonly DataContext _context;
-        public CategoryService(DataContext context)
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IMapper _mapper;
+        public CategoryService(ICategoryRepository categoryRepository,IMapper mapper)
         {
-            _context = context;
-        }
-        public bool CategoryExists(int categoryId)
-        {
-            return _context.Categories.Any(c => c.Id == categoryId);
+            _categoryRepository = categoryRepository;
+            _mapper = mapper;
         }
 
-        public bool CreateCategory(Category category)
+        public Task<bool> CategoryExists(int categoryId)
         {
-            //Change Tracker is EF Core's internal system to monitor entity states(Added, Modified, Deleted). 
-            _context.Categories.Add(category);
-            //Save changes to the database
-            return Save();
-        }
-        public ICollection<Category> GetCategories()
-        {
-            return _context.Categories.OrderBy(c => c.Id).ToList();
+            return _categoryRepository.CategoryExists(categoryId);
         }
 
-        public Category GetCategory(int categoryId)
+        public async Task<bool> CreateCategory(CategoryDto categoryDto)
         {
-            return _context.Categories
-                .Where(c => c.Id == categoryId)
-                .First();
+            if (await _categoryRepository.CategoryExists(categoryDto.Id))
+                throw new ArgumentException("Category already exists");
+            var category = _mapper.Map<Category>(categoryDto);
+            return await _categoryRepository.CreateCategory(category);
         }
 
-        public ICollection<Pokemon> GetPokemonsByCategory(int categoryId)
+        public async Task<bool> DeleteCategory(int categoryId)
         {
-            return _context.Pokemon
-                .Where(p => p.PokemonCategories.Any(pc => pc.Category.Id == categoryId))
-                .OrderBy(p => p.Name)
-                .ToList();
+            if (! await _categoryRepository.CategoryExists(categoryId))
+                throw new ArgumentException("Category does not exists");
+            return await _categoryRepository.DeleteCategory(categoryId);
         }
 
-        public bool Save()
+        public async Task<ICollection<CategoryDto>> GetCategories()
         {
-            try
-            {
-                var saved = _context.SaveChanges();
-                return saved > 0;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            var getCategories = await _categoryRepository.GetCategories();
+            var categories = _mapper.Map<ICollection<CategoryDto>>(getCategories);
+            return categories;
         }
-        public bool UpdateCategory(Category category)
+
+        public async Task<CategoryDto> GetCategory(int categoryId)
         {
-            _context.Update(category);
-            return Save();
+            if (!await _categoryRepository.CategoryExists(categoryId))
+                throw new ArgumentException("Category does not exists");
+            var getCategory = await _categoryRepository.GetCategory(categoryId);
+            var category = _mapper.Map<CategoryDto>(getCategory);
+            return category;
         }
-        public bool DeleteCategory(int categoryId)
+
+        public async Task<ICollection<PokemonDto>> GetPokemonsByCategory(int categoryId)
         {
-            var category = _context.Categories.Find(categoryId);
-            if (category == null)
-            {
-                return false;
-            }
-            _context.Categories.Remove(category);
-            return Save();
+            if (!await _categoryRepository.CategoryExists(categoryId))
+                throw new ArgumentException("Category does not exists");
+            var getPokemons = await _categoryRepository.GetPokemonsByCategory(categoryId);
+            var pokemons = _mapper.Map<ICollection<PokemonDto>>(getPokemons);
+            return pokemons;
+        }
+
+        public async Task<bool> Save()
+        {
+            var save = await _categoryRepository.Save();
+            return save;
+        }
+
+        public async Task<bool> UpdateCategory(CategoryDto categoryDto)
+        {
+            if (!await _categoryRepository.CategoryExists(categoryDto.Id))
+                throw new ArgumentException("Category does not exists");
+            var category = _mapper.Map<Category>(categoryDto);
+            return await _categoryRepository.UpdateCategory(category);
         }
     }
 }

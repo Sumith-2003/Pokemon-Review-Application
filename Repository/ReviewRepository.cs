@@ -18,7 +18,7 @@ namespace PokemonReviewApp.Repository
             return _context.Reviews.ToList();
         }
 
-        public Review GetReview(int reviewId)
+        public Review? GetReview(int reviewId)
         {
             return _context.Reviews.FirstOrDefault(r => r.Id == reviewId);
         }

@@ -1,8 +1,8 @@
 ﻿using PokemonReviewApp.Models;
 
-namespace PokemonReviewApp.Interfaces
+namespace PokemonReviewApp.Services.Interfaces
 {
-    public interface ICountryRepository
+    public interface ICountryService
     {
         ICollection<Country> GetCountries();
         Country? GetCountry(int countryId);

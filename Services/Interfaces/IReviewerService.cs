@@ -1,8 +1,8 @@
 ﻿using PokemonReviewApp.Models;
 
-namespace PokemonReviewApp.Interfaces
+namespace PokemonReviewApp.Services.Interfaces
 {
-    public interface IReviewerRepository
+    public interface IReviewerService
     {
         ICollection<Reviewer> GetReviewers();
         Reviewer? GetReviewer(int reviewerId);

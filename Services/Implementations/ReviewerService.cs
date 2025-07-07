@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PokemonReviewApp.Data;
-using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Models;
+using PokemonReviewApp.Services.Interfaces;
 
-namespace PokemonReviewApp.Repository
+namespace PokemonReviewApp.Services.Repository
 {
-    public class ReviewerRepository : IReviewerRepository
+    public class ReviewerService : IReviewerService
     {
         private readonly DataContext _context;
-        public ReviewerRepository(DataContext context)
+        public ReviewerService(DataContext context)
         {
             _context = context;
         }

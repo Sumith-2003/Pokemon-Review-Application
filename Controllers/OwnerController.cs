@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Models;
-using PokemonReviewApp.Interfaces;
 using AutoMapper;
 using PokemonReviewApp.Dto;
+using PokemonReviewApp.Services.Interfaces;
 
 namespace PokemonReviewApp.Controllers
 {
@@ -10,17 +10,17 @@ namespace PokemonReviewApp.Controllers
     [ApiController]
     public class OwnerController : ControllerBase
     {
-        private readonly IOwnerRepository _ownerRepository;
-        private readonly ICountryRepository _countryRepository;
+        private readonly IOwnerService _ownerService;
+        private readonly ICountryService _countryService;
         private readonly IMapper _mapper;
 
         public OwnerController(
-            IOwnerRepository ownerRepository,
-            ICountryRepository countryRepository,
+            IOwnerService ownerService,
+            ICountryService countryService,
             IMapper mapper)
         {
-            _ownerRepository = ownerRepository;
-            _countryRepository = countryRepository;
+            _ownerService = ownerService;
+            _countryService = countryService;
             _mapper = mapper;
         }
 
@@ -29,7 +29,7 @@ namespace PokemonReviewApp.Controllers
         [ProducesResponseType(500)]
         public IActionResult GetOwners()
         {
-            var pokemons = _mapper.Map<List<OwnerDto>>(_ownerRepository.GetOwners());
+            var pokemons = _mapper.Map<List<OwnerDto>>(_ownerService.GetOwners());
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -42,9 +42,9 @@ namespace PokemonReviewApp.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetOwner(int ownerId)
         {
-            if (!_ownerRepository.OwnerExists(ownerId)) return NotFound();
+            if (!_ownerService.OwnerExists(ownerId)) return NotFound();
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var owner = _mapper.Map<OwnerDto>(_ownerRepository.GetOwner(ownerId));
+            var owner = _mapper.Map<OwnerDto>(_ownerService.GetOwner(ownerId));
             return Ok(owner);
         }
         [HttpGet("{ownerId}/pokemons")]
@@ -52,9 +52,9 @@ namespace PokemonReviewApp.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetPokemonsByOwner(int ownerId)
         {
-            if (!_ownerRepository.OwnerExists(ownerId)) return NotFound();
+            if (!_ownerService.OwnerExists(ownerId)) return NotFound();
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var pokemons = _mapper.Map<List<PokemonDto>>(_ownerRepository.GetPokemonsByOwner(ownerId));
+            var pokemons = _mapper.Map<List<PokemonDto>>(_ownerService.GetPokemonsByOwner(ownerId));
             return Ok(pokemons);
         }
         [HttpGet("{pokeId}/owners")]
@@ -62,9 +62,9 @@ namespace PokemonReviewApp.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetOwnerOfAPokemon(int pokeId)
         {
-            if (!_ownerRepository.GetOwnerOfAPokemon(pokeId).Any()) return NotFound();
+            if (!_ownerService.GetOwnerOfAPokemon(pokeId).Any()) return NotFound();
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var owners = _mapper.Map<List<OwnerDto>>(_ownerRepository.GetOwnerOfAPokemon(pokeId));
+            var owners = _mapper.Map<List<OwnerDto>>(_ownerService.GetOwnerOfAPokemon(pokeId));
             return Ok(owners);
         }
 
@@ -75,7 +75,7 @@ namespace PokemonReviewApp.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             if (createOwner == null) return BadRequest(ModelState);
-            var owner = _ownerRepository.GetOwners()
+            var owner = _ownerService.GetOwners()
                                         .Where(o => o.LastName.Trim().ToUpper() == createOwner.LastName.TrimEnd().ToUpper())
                                         .FirstOrDefault();
             if (owner != null)
@@ -84,8 +84,8 @@ namespace PokemonReviewApp.Controllers
                 return StatusCode(422, ModelState);
             }
             var ownerMap = _mapper.Map<Owner>(createOwner);
-            ownerMap.Country = _countryRepository.GetCountry(countryId);  //can do here or inside the repository
-            if (!_ownerRepository.CreateOwner(ownerMap))
+            ownerMap.Country = _countryService.GetCountry(countryId);  //can do here or inside the repository
+            if (!_ownerService.CreateOwner(ownerMap))
             {
                 ModelState.AddModelError("", $"Something went wrong when saving the owner {createOwner.FirstName} {createOwner.LastName}");
                 return StatusCode(500, ModelState);
@@ -100,10 +100,10 @@ namespace PokemonReviewApp.Controllers
         {
             if (updateOwner == null) return BadRequest(ModelState);
             if (ownerId != updateOwner.Id) return BadRequest(ModelState);
-            if (!_ownerRepository.OwnerExists(ownerId)) return NotFound();
+            if (!_ownerService.OwnerExists(ownerId)) return NotFound();
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var ownerMap = _mapper.Map<Owner>(updateOwner);
-            if (!_ownerRepository.UpdateOwner(ownerMap))
+            if (!_ownerService.UpdateOwner(ownerMap))
             {
                 ModelState.AddModelError("", $"Something went wrong updating the owner {updateOwner.FirstName} {updateOwner.LastName}");
                 return StatusCode(500, ModelState);
@@ -116,10 +116,10 @@ namespace PokemonReviewApp.Controllers
         [ProducesResponseType(404)]
         public IActionResult DeleteOwner(int ownerId)
         {
-            if (!_ownerRepository.OwnerExists(ownerId)) return NotFound();
+            if (!_ownerService.OwnerExists(ownerId)) return NotFound();
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var ownerToDelete = _ownerRepository.GetOwner(ownerId);
-            if (!_ownerRepository.DeleteOwner(ownerToDelete))
+            var ownerToDelete = _ownerService.GetOwner(ownerId);
+            if (!_ownerService.DeleteOwner(ownerToDelete))
             {
                 ModelState.AddModelError("", $"Something went wrong deleting the owner {ownerToDelete.FirstName} {ownerToDelete.LastName}");
                 return StatusCode(500, ModelState);

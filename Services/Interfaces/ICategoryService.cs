@@ -1,8 +1,8 @@
 ﻿using PokemonReviewApp.Models;
 
-namespace PokemonReviewApp.Interfaces
+namespace PokemonReviewApp.Services.Interfaces
 {
-    public interface ICategoryRepository
+    public interface ICategoryService
     {
         ICollection<Category> GetCategories();
         Category GetCategory(int categoryId);

@@ -1,8 +1,8 @@
 ﻿using PokemonReviewApp.Models;
 
-namespace PokemonReviewApp.Interfaces
+namespace PokemonReviewApp.Services.Interfaces
 {
-    public interface IOwnerRepository
+    public interface IOwnerService
     {
         ICollection<Owner> GetOwners();
         Owner? GetOwner(int ownerId);

@@ -1,13 +1,13 @@
 ﻿using PokemonReviewApp.Data;
-using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Models;
+using PokemonReviewApp.Services.Interfaces;
 
-namespace PokemonReviewApp.Repository
+namespace PokemonReviewApp.Services.Repository
 {
-    public class CountryRepository : ICountryRepository
+    public class CountryService : ICountryService
     {
         private readonly DataContext _context;
-        public CountryRepository(DataContext context)
+        public CountryService(DataContext context)
         {
             _context = context;
         }

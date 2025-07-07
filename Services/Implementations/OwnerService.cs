@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
 using PokemonReviewApp.Data;
-using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Models;
+using PokemonReviewApp.Services.Interfaces;
 
-namespace PokemonReviewApp.Repository
+namespace PokemonReviewApp.Services.Repository
 {
-    public class OwnerRepository : IOwnerRepository
+    public class OwnerService : IOwnerService
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
 
-        public OwnerRepository(DataContext context,IMapper mapper)
+        public OwnerService(DataContext context,IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

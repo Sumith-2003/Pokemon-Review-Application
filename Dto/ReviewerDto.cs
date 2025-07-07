@@ -1,7 +1,4 @@
-﻿using PokemonReviewApp.Controllers;
-using PokemonReviewApp.Interfaces;
-
-namespace PokemonReviewApp.Dto
+﻿namespace PokemonReviewApp.Dto
 {
     public class ReviewerDto
     {

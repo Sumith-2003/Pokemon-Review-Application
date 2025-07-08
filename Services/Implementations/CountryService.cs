@@ -1,81 +1,94 @@
-﻿using PokemonReviewApp.Data;
+﻿using AutoMapper;
+using PokemonReviewApp.Data;
+using PokemonReviewApp.Dto;
 using PokemonReviewApp.Models;
+using PokemonReviewApp.Repositories.Interfaces;
 using PokemonReviewApp.Services.Interfaces;
 
 namespace PokemonReviewApp.Services.Repository
 {
     public class CountryService : ICountryService
     {
-        private readonly DataContext _context;
-        public CountryService(DataContext context)
+        private readonly ICountryRepository _countryRepository;
+        private readonly IMapper _mapper;
+        public CountryService(ICountryRepository countryRepository, IMapper mapper)
         {
-            _context = context;
+            _countryRepository = countryRepository;
+            _mapper = mapper;
         }
-        public bool CountryExists(int countryId)
+        public async Task<bool> CountryExists(int countryId)
         {
-            return _context.Countries.Any(c => c.Id == countryId);
-        }
-
-        public bool CountryExists(string countryName)
-        {
-            return _context.Countries.Any(c => c.Name.Trim().ToUpper() == countryName.Trim().ToUpper());
+            return await _countryRepository.CountryExists(countryId);
         }
 
-        public bool CreateCountry(Country country)
+        public async Task<bool> CountryExists(string countryName)
         {
-            _context.Countries.Add(country);
-            return Save();
+            return await _countryRepository.CountryExists(countryName);
         }
 
-        public bool DeleteCountry(Country country)
+        public async Task<bool> CreateCountry(CountryDto countryDto)
         {
-            if (country == null) return false;
-            var countryToDelete = _context.Countries.FirstOrDefault(c => c.Id == country.Id);
-            if (countryToDelete == null) return false;
-            _context.Remove(countryToDelete);
-            return Save();
+            if (await _countryRepository.CountryExists(countryDto.Name))
+                throw new ArgumentException("Country already exists");
+            var country = _mapper.Map<Country>(countryDto);
+            return await _countryRepository.CreateCountry(country);
         }
 
-        public ICollection<Country> GetCountries()
+        public async Task<bool> DeleteCountry(CountryDto countryDto)
         {
-            return _context.Countries.OrderBy(c => c.Name).ToList();
+            if (!await _countryRepository.CountryExists(countryDto.Name))
+                throw new ArgumentException("Country does not exists");
+            var deleteCountry = _mapper.Map<Country>(countryDto);
+            return await _countryRepository.DeleteCountry(deleteCountry);
         }
 
-        public Country? GetCountry(int countryId)
+        public async Task<ICollection<CountryDto>> GetCountries()
         {
-            return _context.Countries.FirstOrDefault(c => c.Id == countryId);
+            var getCountries = await _countryRepository.GetCountries();
+            var countries = _mapper.Map<ICollection<CountryDto>>(getCountries);
+            return countries;
         }
 
-        public Country? GetCountryOfAnOwner(int ownerId)
+        public async Task<CountryDto>? GetCountry(int countryId)
         {
-            return _context.Countries
-                .Where(c => c.Owners.Any(o => o.Id == ownerId))
-                .FirstOrDefault();
+            if (!await _countryRepository.CountryExists(countryId))
+                throw new ArgumentException("Country does not exists");
+            var getCountry = await _countryRepository.GetCountry(countryId);
+            var country = _mapper.Map<CountryDto>(getCountry);
+            return country;
         }
 
-        public ICollection<Owner> GetOwnersByCountry(int countryId)
+        public async Task<CountryDto>? GetCountryOfAnOwner(int ownerId)
         {
-            return _context.Owners
-                .Where(o => o.Country.Id == countryId)
-                .OrderBy(o => o.FirstName)
-                .ToList();
+            var getCountry = await _countryRepository.GetCountryOfAnOwner(ownerId);
+            var country = _mapper.Map<CountryDto>(getCountry);
+            if (country == null)
+                throw new ArgumentException("Owner does not have a country");
+            return country;
         }
-        public bool Save()
+
+        public async Task<ICollection<OwnerDto>> GetOwnersByCountry(int countryId)
         {
-            try
-            {
-                var saved = _context.SaveChanges();
-                return saved > 0;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            if (!await _countryRepository.CountryExists(countryId))
+                throw new ArgumentException("Country does not exists");
+            var getOwners = await _countryRepository.GetOwnersByCountry(countryId);
+            var owners = _mapper.Map<ICollection<OwnerDto>>(getOwners);
+            if(owners == null) throw new ArgumentException("No owners found for this country");
+            return owners;
         }
-        public bool UpdateCountry(Country country)
+
+        public async Task<bool> Save()
         {
-            _context.Update(country);
-            return Save();
+            var saved = await _countryRepository.Save();
+            return saved;
+        }
+
+        public async Task<bool> UpdateCountry(CountryDto countryDto)
+        {
+            if (!await _countryRepository.CountryExists(countryDto.Id))
+                throw new ArgumentException("Country does not exists");
+            var updateCountry = _mapper.Map<Country>(countryDto);
+            return await _countryRepository.UpdateCountry(updateCountry);
         }
     }
 }

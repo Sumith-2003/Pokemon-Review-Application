@@ -11,13 +11,11 @@ namespace PokemonReviewApp.Controllers
     {
         private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
-
         public CategoryController(ICategoryService categoryService, IMapper mapper)
         {
             _categoryService = categoryService;
             _mapper = mapper;
         }
-
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CategoryDto>))]
         [ProducesResponseType(500)]
@@ -30,7 +28,6 @@ namespace PokemonReviewApp.Controllers
             }
             return Ok(categories);
         }
-
         [HttpGet("{categoryId}")]
         [ProducesResponseType(200, Type = typeof(CategoryDto))]
         [ProducesResponseType(400)]
@@ -42,7 +39,6 @@ namespace PokemonReviewApp.Controllers
             if (category == null) return NotFound();
             return Ok(category);
         }
-
         [HttpGet("pokemon/{categoryId}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CategoryDto>))]
         [ProducesResponseType(400)]

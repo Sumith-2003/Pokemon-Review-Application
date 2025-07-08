@@ -14,6 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddTransient<Seed>();
 // Register Repositories
 builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 // Register Services
 builder.Services.AddScoped<IPokemonService, PokemonService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();

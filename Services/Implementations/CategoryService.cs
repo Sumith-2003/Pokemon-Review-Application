@@ -63,8 +63,8 @@ namespace PokemonReviewApp.Services.Repository
 
         public async Task<bool> Save()
         {
-            var save = await _categoryRepository.Save();
-            return save;
+            var saved = await _categoryRepository.Save();
+            return saved;
         }
 
         public async Task<bool> UpdateCategory(CategoryDto categoryDto)

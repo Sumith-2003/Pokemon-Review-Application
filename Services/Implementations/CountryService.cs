@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using PokemonReviewApp.Data;
 using PokemonReviewApp.Dto;
 using PokemonReviewApp.Models;
 using PokemonReviewApp.Repositories.Interfaces;

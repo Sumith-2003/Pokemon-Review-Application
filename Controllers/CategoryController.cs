@@ -21,11 +21,8 @@ namespace PokemonReviewApp.Controllers
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetCategories()
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var categories = await _categoryService.GetCategories();
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             return Ok(categories);
         }
         [HttpGet("{categoryId}")]

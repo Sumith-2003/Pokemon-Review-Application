@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PokemonReviewApp;
 using PokemonReviewApp.Data;
+using PokemonReviewApp.Middleware;
 using PokemonReviewApp.Repositories.Implementations;
 using PokemonReviewApp.Repositories.Interfaces;
 using PokemonReviewApp.Services.Interfaces;
@@ -55,6 +56,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

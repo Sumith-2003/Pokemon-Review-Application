@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Dto;
 using PokemonReviewApp.Services.Interfaces;
+using PokemonReviewApp.Services.Repository;
 
 namespace PokemonReviewApp.Controllers
 {
@@ -9,10 +10,12 @@ namespace PokemonReviewApp.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
+        private readonly ILogger<CategoryService> _logger;
         private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
-        public CategoryController(ICategoryService categoryService, IMapper mapper)
+        public CategoryController(ILogger<CategoryService> logger,ICategoryService categoryService, IMapper mapper)
         {
+            _logger = logger;
             _categoryService = categoryService;
             _mapper = mapper;
         }
@@ -30,10 +33,12 @@ namespace PokemonReviewApp.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetCategory(int categoryId)
         {
+            _logger.LogInformation("Fetching category with ID {CategoryId}", categoryId);
             if (!await _categoryService.CategoryExists(categoryId)) return NotFound();
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var category = await _categoryService.GetCategory(categoryId);
             if (category == null) return NotFound();
+            _logger.LogInformation("Successfully retrieved category {Name}", category.Name);
             return Ok(category);
         }
         [HttpGet("pokemon/{categoryId}")]

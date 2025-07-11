@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using PokemonReviewApp.Data;
 using PokemonReviewApp.Models;
 using PokemonReviewApp.Repositories.Interfaces;
@@ -8,9 +9,15 @@ namespace PokemonReviewApp.Repositories.Implementations
     public class CategoryRepository : ICategoryRepository
     {
         private readonly DataContext _context;
-        public CategoryRepository(DataContext context)
+        // IMemoryCache instance for implementing in-memory caching.
+        private readonly IMemoryCache _cache;
+        // Cache expiration time set to 30 minutes.
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
+
+        public CategoryRepository(DataContext context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
         public async Task<bool> CategoryExists(int categoryId)
         {
@@ -26,6 +33,7 @@ namespace PokemonReviewApp.Repositories.Implementations
         }
         public async Task<ICollection<Category>> GetCategories()
         {
+
             return await _context.Categories.OrderBy(c => c.Id).ToListAsync();
         }
 

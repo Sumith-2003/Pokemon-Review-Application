@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Dto;
+using PokemonReviewApp.Helpers;
 using PokemonReviewApp.Services.Interfaces;
 using PokemonReviewApp.Services.Repository;
 
@@ -19,13 +20,24 @@ namespace PokemonReviewApp.Controllers
             _categoryService = categoryService;
             _mapper = mapper;
         }
-        [HttpGet]
+        [HttpGet("all")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CategoryDto>))]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> GetCategories()
+        public async Task<IActionResult> GetAllCategories()
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var categories = await _categoryService.GetCategories();
+            return Ok(categories);
+        }
+        [HttpGet("paginated")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetCategories([FromQuery] PaginationParams query)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var categories = await _categoryService.GetCategories(query);
             return Ok(categories);
         }
         [HttpGet("{categoryId}")]

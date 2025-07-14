@@ -1,4 +1,5 @@
-﻿using PokemonReviewApp.Models;
+﻿using PokemonReviewApp.Helpers;
+using PokemonReviewApp.Models;
 
 namespace PokemonReviewApp.Repositories.Interfaces
 {
@@ -7,6 +8,7 @@ namespace PokemonReviewApp.Repositories.Interfaces
         Task<bool> CategoryExists(int categoryId);
         Task<bool> CreateCategory(Category category);
         Task<ICollection<Category>> GetCategories();
+        Task<ICollection<Category>> GetCategoriesAsync(PaginationParams query);
         Task<Category> GetCategory(int categoryId);
         Task<ICollection<Pokemon>> GetPokemonsByCategory(int categoryId);
         Task<bool> UpdateCategory(Category category);

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PokemonReviewApp.Dto;
+using PokemonReviewApp.Helpers;
 using PokemonReviewApp.Models;
 using PokemonReviewApp.Repositories.Interfaces;
 using PokemonReviewApp.Services.Interfaces;
@@ -41,6 +42,11 @@ namespace PokemonReviewApp.Services.Repository
             var getCategories = await _categoryRepository.GetCategories();
             var categories = _mapper.Map<ICollection<CategoryDto>>(getCategories);
             return categories;
+        }
+        public async Task<ICollection<CategoryDto>> GetCategories(PaginationParams query)
+        {
+            var categories = await _categoryRepository.GetCategoriesAsync(query);
+            return _mapper.Map<ICollection<CategoryDto>>(categories);
         }
 
         public async Task<CategoryDto> GetCategory(int categoryId)

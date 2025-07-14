@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PokemonReviewApp.Data;
+using PokemonReviewApp.Helpers;
 using PokemonReviewApp.Models;
 using PokemonReviewApp.Repositories.Interfaces;
 
@@ -25,6 +26,42 @@ namespace PokemonReviewApp.Repositories.Implementations
         }
         public async Task<ICollection<Category>> GetCategories() =>
             await _context.Categories.OrderBy(c => c.Id).ToListAsync();
+        public async Task<ICollection<Category>> GetCategoriesAsync(PaginationParams query)
+        {
+            var categories = _context.Categories.AsQueryable();
+
+            // 🔍 Filtering
+            if (!string.IsNullOrEmpty(query.Search))
+            {
+                categories = categories.Where(c => c.Name.Contains(query.Search));
+            }
+
+            // 🔃 Sorting
+            if (!string.IsNullOrEmpty(query.SortBy))
+            {
+                switch (query.SortBy.ToLower())
+                {
+                    case "name":
+                        categories = categories.OrderBy(c => c.Name);
+                        break;
+                    case "id":
+                    default:
+                        categories = categories.OrderBy(c => c.Id);
+                        break;
+                }
+            }
+            else
+            {
+                categories = categories.OrderBy(c => c.Id); // default sort
+            }
+
+            // 📄 Pagination
+            categories = categories
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize);
+
+            return await categories.ToListAsync();
+        }
 
         public async Task<Category> GetCategory(int categoryId) =>
             await _context.Categories

@@ -1,4 +1,7 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PokemonReviewApp;
 using PokemonReviewApp.Data;
 using PokemonReviewApp.Middleware;
@@ -9,8 +12,27 @@ using PokemonReviewApp.Services.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//Authentication and Authorization
+builder.Services.AddAuthentication(opt => {
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
+builder.Services.AddAuthorization();
 
+// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddTransient<Seed>();
 // Register Repositories
@@ -60,6 +82,8 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

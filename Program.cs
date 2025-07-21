@@ -7,6 +7,8 @@ using PokemonReviewApp.Data;
 using PokemonReviewApp.Middleware;
 using PokemonReviewApp.Repositories.Implementations;
 using PokemonReviewApp.Repositories.Interfaces;
+using PokemonReviewApp.Services;
+using PokemonReviewApp.Services.Implementations;
 using PokemonReviewApp.Services.Interfaces;
 using PokemonReviewApp.Services.Repository;
 
@@ -16,9 +18,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(opt => {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
     .AddJwtBearer(options =>
     {
+        options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -31,7 +35,7 @@ builder.Services.AddAuthentication(opt => {
         };
     });
 builder.Services.AddAuthorization();
-
+builder.Services.AddScoped<TokenService>();
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddTransient<Seed>();

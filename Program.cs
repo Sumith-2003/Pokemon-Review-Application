@@ -46,7 +46,10 @@ builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 //builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
 //builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 //builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 // Register Services
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPokemonService, PokemonService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICountryService, CountryService>();

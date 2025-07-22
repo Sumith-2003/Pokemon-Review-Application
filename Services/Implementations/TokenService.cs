@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using PokemonReviewApp.Models;
+using PokemonReviewApp.Dto;
 using PokemonReviewApp.Services.Interfaces;
 
 namespace PokemonReviewApp.Services.Implementations
@@ -15,7 +15,7 @@ namespace PokemonReviewApp.Services.Implementations
         {
             _config = config;
         }
-        public async Task<string> CreateToken(User user)
+        public async Task<string> CreateToken(UserDto user)
         {
             var claims = new[]
             {

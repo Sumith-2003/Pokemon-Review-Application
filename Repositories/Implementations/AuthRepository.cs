@@ -43,7 +43,7 @@ namespace PokemonReviewApp.Repositories.Implementations
         public async Task<User> Login(string username, string password)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
-            if (user == null || !VerifyPassword(password, user.PasswordHash, user.PasswordSalt)) 
+            if (user == null || !VerifyPassword(password, user.PasswordHash, user.PasswordSalt))
                 return null;
             return user;
         }
@@ -52,6 +52,10 @@ namespace PokemonReviewApp.Repositories.Implementations
             using var hmac = new HMACSHA512(salt);
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             return hash.SequenceEqual(computedHash);
+        }
+        public async Task<User> GetUserByUsername(string username)
+        {
+            return await _context.Users.FirstAsync(u => u.Username == username);
         }
     }
 }

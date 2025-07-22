@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Dto;
 using PokemonReviewApp.Helpers;
@@ -20,6 +21,7 @@ namespace PokemonReviewApp.Controllers
             _categoryService = categoryService;
             _mapper = mapper;
         }
+        [Authorize]
         [HttpGet("all")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CategoryDto>))]
         [ProducesResponseType(500)]

@@ -1,9 +1,10 @@
-﻿using PokemonReviewApp.Models;
+﻿using PokemonReviewApp.Dto;
+using PokemonReviewApp.Models;
 
 namespace PokemonReviewApp.Services.Interfaces
 {
     public interface ITokenService
     {
-        Task<string> CreateToken(User user);
+        Task<string> CreateToken(UserDto user);
     }
 }

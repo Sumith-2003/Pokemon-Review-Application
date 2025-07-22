@@ -21,14 +21,15 @@ namespace PokemonReviewApp.Repositories.Implementations
             return await _context.Users.AnyAsync(u => u.Username == username);
         }
 
-        public async Task<User> Register(string username, string password)
+        public async Task<User> Register(string username, string password, string role)
         {
             CreatePasswordHash(password, out byte[] hash, out byte[] salt);
             var user = new User
             {
                 Username = username,
                 PasswordHash = hash,
-                PasswordSalt = salt
+                PasswordSalt = salt,
+                Role = role ?? "User" // Default role
             };
             _context.Users.Add(user);
             await _context.SaveChangesAsync();

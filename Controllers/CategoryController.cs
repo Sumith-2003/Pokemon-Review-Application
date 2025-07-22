@@ -21,7 +21,7 @@ namespace PokemonReviewApp.Controllers
             _categoryService = categoryService;
             _mapper = mapper;
         }
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         [HttpGet("all")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CategoryDto>))]
         [ProducesResponseType(500)]
@@ -42,6 +42,7 @@ namespace PokemonReviewApp.Controllers
             var categories = await _categoryService.GetCategories(query);
             return Ok(categories);
         }
+        [Authorize]
         [HttpGet("{categoryId}")]
         [ProducesResponseType(200, Type = typeof(CategoryDto))]
         [ProducesResponseType(400)]
@@ -55,6 +56,7 @@ namespace PokemonReviewApp.Controllers
             _logger.LogInformation("Successfully retrieved category {Name}", category.Name);
             return Ok(category);
         }
+        [Authorize]
         [HttpGet("pokemon/{categoryId}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CategoryDto>))]
         [ProducesResponseType(400)]
@@ -66,6 +68,7 @@ namespace PokemonReviewApp.Controllers
             if (pokemons == null) return NotFound();
             return Ok(pokemons);
         }
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -80,6 +83,7 @@ namespace PokemonReviewApp.Controllers
             }
             return Ok("Successfully created");
         }
+        [Authorize]
         [HttpPut("{categoryId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -95,6 +99,7 @@ namespace PokemonReviewApp.Controllers
             }
             return Ok("Successfully updated");
         }
+        [Authorize]
         [HttpDelete("{categoryId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]

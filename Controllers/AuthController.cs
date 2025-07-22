@@ -31,7 +31,7 @@ namespace PokemonReviewApp.Controllers
             {
                 return BadRequest("Username is taken");
             }
-            var registeredUser = await _authService.Register(dto.Username, dto.Password);
+            var registeredUser = await _authService.Register(dto.Username, dto.Password, dto.Role);
             var user = await _authService.GetUserByUsername(dto.Username);
             var token = await _tokenService.CreateToken(user);
             return Ok(user);
@@ -39,7 +39,7 @@ namespace PokemonReviewApp.Controllers
         [HttpPost("login")]
         [ProducesResponseType(200, Type = typeof(string))]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> Login(RegisterDto dto)
+        public async Task<IActionResult> Login(LoginDto dto)
         {
             var loginUser = await _authService.Login(dto.Username, dto.Password);
             if (loginUser == null)

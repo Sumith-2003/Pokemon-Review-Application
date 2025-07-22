@@ -43,9 +43,9 @@ namespace PokemonReviewApp.Services.Implementations
             return _mapper.Map<LoginDto>(user);
         }
 
-        public async Task<RegisterDto> Register(string username, string password)
+        public async Task<RegisterDto> Register(string username, string password, string role)
         {
-            var user = await _authRepository.Register(username, password);
+            var user = await _authRepository.Register(username, password, role);
             if (user == null)
             {
                 throw new InvalidOperationException("Registration failed.");

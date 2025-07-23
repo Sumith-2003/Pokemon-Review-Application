@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Dto;
 using PokemonReviewApp.Models;
@@ -17,6 +18,7 @@ namespace PokemonReviewApp.Controllers
             _countryService = countryService;
             _mapper = mapper;
         }
+        [Authorize(Roles = "User,Admin")]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CountryDto>))]
         [ProducesResponseType(500)]
@@ -26,7 +28,7 @@ namespace PokemonReviewApp.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return Ok(countries);
         }
-
+        [Authorize(Roles = "User,Admin")]
         [HttpGet("{countryId}")]
         [ProducesResponseType(200, Type = typeof(CountryDto))]
         [ProducesResponseType(400)]
@@ -37,7 +39,7 @@ namespace PokemonReviewApp.Controllers
             var country =await _countryService.GetCountry(countryId);
             return Ok(country);
         }
-
+        [Authorize(Roles = "User,Admin")]
         [HttpGet("owners/{countryId}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<OwnerDto>))]
         [ProducesResponseType(400)]
@@ -48,6 +50,7 @@ namespace PokemonReviewApp.Controllers
             var owners = await _countryService.GetOwnersByCountry(countryId);
             return Ok(owners);
         }
+        [Authorize(Roles = "User,Admin")]
         [HttpGet("owner/{ownerId}")]
         [ProducesResponseType(200, Type = typeof(CountryDto))]
         [ProducesResponseType(400)]
@@ -57,7 +60,7 @@ namespace PokemonReviewApp.Controllers
             var country = await _countryService.GetCountryOfAnOwner(ownerId);
             return Ok(country);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(CountryDto))]
         [ProducesResponseType(400)]
@@ -72,6 +75,7 @@ namespace PokemonReviewApp.Controllers
             }
             return Ok("Successfully created");
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("{countryId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -87,6 +91,7 @@ namespace PokemonReviewApp.Controllers
             }
             return Ok("Successfully updated");
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{countryId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]

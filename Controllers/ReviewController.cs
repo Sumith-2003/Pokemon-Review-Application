@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Dto;
 using PokemonReviewApp.Models;
@@ -25,6 +26,7 @@ namespace PokemonReviewApp.Controllers
             _pokemonService = pokemonService;
             _reviewerService = reviewerService;
         }
+        [Authorize(Roles = "User,Admin")]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ReviewDto>))]
         [ProducesResponseType(500)]
@@ -34,7 +36,7 @@ namespace PokemonReviewApp.Controllers
             var reviewsDto = _mapper.Map<List<ReviewDto>>(reviews);
             return Ok(reviewsDto);
         }
-
+        [Authorize(Roles = "User,Admin")]
         [HttpGet("{reviewId:int}")]
         [ProducesResponseType(200, Type = typeof(ReviewDto))]
         [ProducesResponseType(404)]
@@ -48,7 +50,7 @@ namespace PokemonReviewApp.Controllers
             var reviewDto = _mapper.Map<ReviewDto>(review);
             return Ok(reviewDto);
         }
-
+        [Authorize(Roles = "User,Admin")]
         [HttpGet("pokemon/{pokeId}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ReviewDto>))]
         [ProducesResponseType(404)]
@@ -62,6 +64,7 @@ namespace PokemonReviewApp.Controllers
             var reviewsDto = _mapper.Map<List<ReviewDto>>(reviews);
             return Ok(reviewsDto);
         }
+        [Authorize(Roles = "User,Admin")]
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(ReviewDto))]
         [ProducesResponseType(400)]
@@ -78,6 +81,7 @@ namespace PokemonReviewApp.Controllers
             }
             return Ok("Successfully created");
         }
+        [Authorize(Roles = "User,Admin")]
         [HttpPut("{reviewId:int}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -96,6 +100,7 @@ namespace PokemonReviewApp.Controllers
             }
             return Ok("Successfully updated");
         }
+        [Authorize(Roles = "User,Admin")]
         [HttpDelete("{reviewId:int}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Dto;
 using PokemonReviewApp.Models;
@@ -17,7 +18,7 @@ namespace PokemonReviewApp.Controllers
             _reviewerService = reviewerService;
             _mapper = mapper;
         }
-
+        [Authorize(Roles = "User,Admin")]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ReviewerDto>))]
         [ProducesResponseType(400)]
@@ -29,6 +30,7 @@ namespace PokemonReviewApp.Controllers
             var reviewersDto = _mapper.Map<List<ReviewerDto>>(reviewers);
             return Ok(reviewersDto);
         }
+        [Authorize(Roles = "User,Admin")]
         [HttpGet("{reviewerId}")]
         [ProducesResponseType(200, Type = typeof(ReviewerDto))]
         [ProducesResponseType(400)]
@@ -42,6 +44,7 @@ namespace PokemonReviewApp.Controllers
             var reviewerDto = _mapper.Map<ReviewerDto>(reviewer);
             return Ok(reviewerDto);
         }
+        [Authorize(Roles = "User,Admin")]
         [HttpGet("{reviewerId}/Reviews")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ReviewDto>))]
         [ProducesResponseType(400)]
@@ -55,6 +58,7 @@ namespace PokemonReviewApp.Controllers
             var reviewsDto = _mapper.Map<List<ReviewDto>>(reviews);
             return Ok(reviewsDto);
         }
+        [Authorize(Roles = "User,Admin")]
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(ReviewerDto))]
         [ProducesResponseType(400)]
@@ -77,6 +81,7 @@ namespace PokemonReviewApp.Controllers
             }
             return Ok("Successfully created");
         }
+        [Authorize(Roles = "User,Admin")]
         [HttpPut("{reviewerId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -94,6 +99,7 @@ namespace PokemonReviewApp.Controllers
             }
             return Ok("Successfully updated");
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{reviewerId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
